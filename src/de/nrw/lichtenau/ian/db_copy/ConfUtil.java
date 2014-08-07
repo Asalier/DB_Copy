@@ -7,22 +7,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO mars: Conf_Util -> ConfUtil
+//TODO mars: Conf_Util -> ConfUtil DONE
 //TODO mars: static erzwingen
-//TODO mars: /home/ian -> ermitteln
-public class Conf_Util {
-	public static List<DB_Prop> getdbconf() throws IOException {
-		try(BufferedReader r = new BufferedReader(new FileReader("/home/ian/test.txt"))){
-			List<DB_Prop> rc = new ArrayList<>();
+//TODO mars: /home/ian -> ermitteln DONE
+public class ConfUtil {
+	public static List<DBProp> getdbconf() throws IOException {
+		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/quell.ini"))){
+			List<DBProp> rc = new ArrayList<>();
 			String line = "";
-			DB_Prop con = null;
+			DBProp con = null;
 			while (true) {
 				line = r.readLine();
 				if (line == null){
 					break;
 				}
 				if (line.startsWith("[DB_")){
-					con = new DB_Prop();	
+					con = new DBProp();
+					con.setName(line.substring(4, line.length()-1));
 					rc.add(con);
 				}else{
 					String[] kv=line.split("=");

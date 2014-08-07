@@ -18,9 +18,9 @@ public class DB_Copy {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
-		List<DB_Prop> conf=Conf_Util.getdbconf();
+		List<DBProp> conf=ConfUtil.getdbconf();
 		if(conf.size()>0)  {
-			DB_Prop dbProp=conf.get(0);
+			DBProp dbProp=conf.get(0);
 			Class.forName(dbProp.getDriver());
 			
 			try(Connection conn = DriverManager.getConnection(dbProp.getUrl(), dbProp.getUser(), dbProp.getPass())) {

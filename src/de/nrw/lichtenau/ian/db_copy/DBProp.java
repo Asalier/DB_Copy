@@ -1,11 +1,22 @@
 package de.nrw.lichtenau.ian.db_copy;
 
-public class DB_Prop {
+public class DBProp {
 	private String url;
 	private String driver;
 	private String user;
 	private String pass;
+	private String name; 
 	
+	@Override
+	public String toString() {
+		return name;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getUrl() {
 		return url;
 	}
