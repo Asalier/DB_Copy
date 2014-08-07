@@ -2,20 +2,30 @@ package de.nrw.lichtenau.ian.db_copy.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JToolBar;
+import javax.swing.border.BevelBorder;
 
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
-import javax.swing.border.BevelBorder;
 
 public class Window {
 
@@ -57,40 +67,104 @@ public class Window {
 		frame.getContentPane().add(panel, BorderLayout.WEST);
 		panel.setLayout(new BorderLayout(0, 0));
 		
+		JPanel northPanel = new JPanel();
+		panel.add(northPanel, BorderLayout.NORTH);
+		northPanel.setLayout(new BorderLayout(0, 0));
+		
 		JLabel lblNewLabel = new JLabel("Datenbankverbindungen");
-		panel.add(lblNewLabel, BorderLayout.NORTH);
-		JButton btnNeu = new JButton("Neu");
-		panel.add(btnNeu, BorderLayout.SOUTH);
+		northPanel.add(lblNewLabel, BorderLayout.NORTH);
 		
-		JPanel dbListPanel = new JPanel();
-		panel.add(dbListPanel, BorderLayout.CENTER);
-		GridBagLayout gbl_dbListPanel = new GridBagLayout();
-		gbl_dbListPanel.columnWidths = new int[]{70, 0};
-		gbl_dbListPanel.rowHeights = new int[]{101, 15, 0};
-		gbl_dbListPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_dbListPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		dbListPanel.setLayout(gbl_dbListPanel);
-		try {
-			List<DBProp> dbconfs=ConfUtil.getdbconf();
-			GridBagConstraints c=new GridBagConstraints();
-			for(DBProp dbconf:dbconfs) {
-				c.gridwidth=1;
-				JLabel l=new JLabel(dbconf.getName());
-				gbl_dbListPanel.setConstraints(l, c);
-				dbListPanel.add(l);
-				JButton edit=new JButton(new ImageIcon("icons/jlfgr-1_0/toolbarButtonGraphics/general/Edit16.gif"));
-				gbl_dbListPanel.setConstraints(edit, c);
-				dbListPanel.add(edit);
-				JButton delete=new JButton(new ImageIcon("icons/jlfgr-1_0/toolbarButtonGraphics/general/Delete16.gif"));
-				c.gridwidth=GridBagConstraints.REMAINDER;
-				gbl_dbListPanel.setConstraints(delete, c);
-				dbListPanel.add(delete);
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		northPanel.add(toolBar, BorderLayout.SOUTH);
+		
+		JButton btnNew = new JButton("");
+		btnNew.setToolTipText("Neu ...");
+		btnNew.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/New16.gif")));
+		toolBar.add(btnNew);
+		
+		final JList list = new JList();
+		
+		JButton btnEdit = new JButton("");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (list.getSelectedValue() != null) {
+					DBPropDlg propDlg=new DBPropDlg();
+					propDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					DBProp auswahl = (DBProp) list.getSelectedValue();
+					propDlg.getTextFieldName().setText(auswahl.getName());
+					propDlg.getTextFieldDriver().setText(auswahl.getDriver());
+					propDlg.getTextFieldPass().setText(auswahl.getPass());
+					propDlg.getTextFieldUrl().setText(auswahl.getUrl());
+					propDlg.getTextFieldUser().setText(auswahl.getUser());
+					propDlg.setVisible(true);	
+				}else{
+					JOptionPane.showMessageDialog(frame, "Bitte wählen sie erst eine Datenbankverbindung aus.");
+				}
 			}
-		} catch (IOException e1) {
-			// fixme ian : joptionpane statt printstacktrace 
-			e1.printStackTrace();
-		}
+		});
+		btnEdit.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/Edit16.gif")));
+		btnEdit.setToolTipText("Ändern ...");
+		toolBar.add(btnEdit);
 		
-	}
+		JButton btnDelete = new JButton("");
+		btnDelete.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/Delete16.gif")));
+		btnDelete.setToolTipText("Löschen");
+		toolBar.add(btnDelete);
+		
+		final List<DBProp> values=new ArrayList<DBProp>();
+		try {
+			values.addAll(ConfUtil.getdbconf());
+		} catch (IOException e) {
+//			 fixme ian : joptionpane statt printstacktrace 
+			e.printStackTrace();
+		}
+		list.setModel(new AbstractListModel() {
+			public int getSize() {
+				return values.size();
+			}
+			public Object getElementAt(int index) {
+				return values.get(index);
+			}
+		});
+		panel.add(list, BorderLayout.CENTER);
+		
+		JPanel panel_1 = new JPanel();
+		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new GridLayout(3, 0, 0, 0));
+		
+		JPanel panel_2 = new JPanel();
+		panel_1.add(panel_2);
+		
+		JLabel lblQuelle = new JLabel("Quelle");
+		panel_2.add(lblQuelle);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(values.toArray()));
+		panel_2.add(comboBox_1);
+		
+		JLabel lblZiel = new JLabel("Ziel");
+		panel_2.add(lblZiel);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(values.toArray()));
+		panel_2.add(comboBox);
+		
+		JPanel panel_3 = new JPanel();
+		panel_1.add(panel_3);
+		
+		JProgressBar progressBar = new JProgressBar();
+		panel_3.add(progressBar);
+		
+		JProgressBar progressBar_1 = new JProgressBar();
+		panel_3.add(progressBar_1);
+		
+		JPanel panel_4 = new JPanel();
+		panel_1.add(panel_4);
+		
+		JButton btnNewButton = new JButton("New button");
+		panel_4.add(btnNewButton);
+		
 
+	}
 }
