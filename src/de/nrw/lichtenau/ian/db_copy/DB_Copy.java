@@ -6,7 +6,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class DB_Copy {
 	
@@ -18,9 +17,9 @@ public class DB_Copy {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
-		List<DBProp> conf=ConfUtil.getdbconf();
-		if(conf.size()>0)  {
-			DBProp dbProp=conf.get(0);
+		ConfUtil.readconf();
+		if(ConfUtil.verb.size()>0)  {
+			DBProp dbProp=ConfUtil.verb.get(0);
 			Class.forName(dbProp.getDriver());
 			
 			try(Connection conn = DriverManager.getConnection(dbProp.getUrl(), dbProp.getUser(), dbProp.getPass())) {

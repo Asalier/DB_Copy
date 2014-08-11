@@ -7,16 +7,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 //TODO mars: Conf_Util -> ConfUtil DONE
 //TODO mars: static erzwingen
 //TODO mars: /home/ian -> ermitteln DONE
 public class ConfUtil {
-	public static List<DBProp> getdbconf() throws IOException {		
+	public static List<DBProp> verb;
+	
+	public static void readconf() throws IOException {		
 		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/con.ini"))){
-			List<DBProp> rc = new ArrayList<>();
+			verb = new ArrayList<>();
 			String line = "";
 			DBProp con = null;
 			while (true) {
@@ -27,7 +28,7 @@ public class ConfUtil {
 				if (line.startsWith("[DB_")){
 					con = new DBProp();
 					con.setName(line.substring(4, line.length()-1));
-					rc.add(con);
+					verb.add(con);
 				}else{
 					String[] kv=line.split("=");
 					switch(kv[0]){
@@ -46,13 +47,11 @@ public class ConfUtil {
 					}
 				}
 			}
-			return rc;
 		} catch (FileNotFoundException e) {
-			return new ArrayList<>();
-
+//			Wenn keine Conf datei vorhanden ist dann ist das Programm zum ersten mal gestartet worden. 
 		}
 	}
-	public static void setdbconf(List<DBProp> verb) throws FileNotFoundException, UnsupportedEncodingException {
+	public static void writeconf() throws FileNotFoundException {
 		try (PrintWriter w = new PrintWriter(System.getProperty("user.home") + "/con.ini" , "UTF-8")){
 			for(DBProp ver: verb) {
 				w.println("[DB_" + ver.getName() + "]");
@@ -61,6 +60,8 @@ public class ConfUtil {
 				w.println("USER=" + ver.getUser());
 				w.println("PASS=" + ver.getPass());
 			}
+		}catch(UnsupportedEncodingException e) {
+			System.out.println("Kein UTF-8 ?");
 		}
 	}
 }

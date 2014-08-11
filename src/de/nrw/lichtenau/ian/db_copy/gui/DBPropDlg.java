@@ -2,14 +2,20 @@ package de.nrw.lichtenau.ian.db_copy.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import java.awt.GridLayout;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import de.nrw.lichtenau.ian.db_copy.ConfUtil;
+import de.nrw.lichtenau.ian.db_copy.DBProp;
 
 public class DBPropDlg extends JDialog {
 
@@ -19,6 +25,12 @@ public class DBPropDlg extends JDialog {
 	private JTextField textFieldDriver;
 	private JTextField textFieldUser;
 	private JTextField textFieldPass;
+	private DBProp dbprop;
+	private Window window;
+	
+	public void setWindow(Window window) {
+		this.window = window;
+	}
 
 	/**
 	 * Launch the application.
@@ -33,10 +45,15 @@ public class DBPropDlg extends JDialog {
 		}
 	}
 
+	public void setDbprop(DBProp dbprop) {
+		this.dbprop = dbprop;
+	}
+
 	/**
 	 * Create the dialog.
 	 */
 	public DBPropDlg() {
+		setTitle("DB Edit");
 		setBounds(100, 100, 198, 172);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -84,12 +101,36 @@ public class DBPropDlg extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						dbprop.setDriver(textFieldDriver.getText());
+						dbprop.setName(textFieldName.getText());
+						dbprop.setPass(textFieldPass.getText());
+						dbprop.setUrl(textFieldUrl.getText());
+						dbprop.setUser(textFieldUser.getText());
+						try {
+							ConfUtil.writeconf();
+						}catch(FileNotFoundException e1){
+							System.out.println("Keine Zugriffsrechte : " + e1);
+						}
+						window.refresh();
+						dispose();
+
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
