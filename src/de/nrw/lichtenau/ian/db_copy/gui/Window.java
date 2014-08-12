@@ -29,8 +29,8 @@ public class Window {
 
 	private JFrame frmDbCopy;
 	final JList<DBProp> list = new JList<>();
-	private JComboBox comboBox_1;
-	private JComboBox comboBox;
+	private JComboBox<DBProp> comboBox_1;
+	private JComboBox<DBProp> comboBox;
 
 	/**
 	 * Launch the application.
@@ -81,6 +81,21 @@ public class Window {
 		northPanel.add(toolBar, BorderLayout.SOUTH);
 		
 		JButton btnNew = new JButton("");
+		btnNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DBPropDlg propDlg=new DBPropDlg();
+				propDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				propDlg.getTextFieldName();
+				propDlg.getTextFieldDriver();
+				propDlg.getTextFieldPass();
+				propDlg.getTextFieldUrl();
+				propDlg.getTextFieldUser();
+				propDlg.setDbprop(null);
+				propDlg.setWindow(Window.this);
+				propDlg.setVisible(true);				
+				
+			}
+		});
 		btnNew.setToolTipText("Neu ...");
 		btnNew.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/New16.gif")));
 		toolBar.add(btnNew);
@@ -134,13 +149,13 @@ public class Window {
 		JLabel lblQuelle = new JLabel("Quelle");
 		panel_2.add(lblQuelle);
 		
-		comboBox_1 = new JComboBox();
+		comboBox_1 = new JComboBox<>();
 		panel_2.add(comboBox_1);
 		
 		JLabel lblZiel = new JLabel("Ziel");
 		panel_2.add(lblZiel);
 		
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<>();
 		panel_2.add(comboBox);
 		
 		JPanel panel_3 = new JPanel();
@@ -162,26 +177,25 @@ public class Window {
 	}
 	
 	public void refresh(){
-		
-		list.setModel(new AbstractListModel<DBProp>() {
+		@SuppressWarnings("serial")
+		AbstractListModel<DBProp> myListModel=new AbstractListModel<DBProp>() {
 			public int getSize() {
 				return ConfUtil.verb.size();
 			}
 			public DBProp getElementAt(int index) {
 				return ConfUtil.verb.get(index);
 			}
-			
-			
-		});
-		comboBox_1.setModel(new DefaultComboBoxModel(ConfUtil.verb.toArray()));
-		comboBox.setModel(new DefaultComboBoxModel(ConfUtil.verb.toArray()));
+		};
+		list.setModel(myListModel);
+		comboBox_1.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
+		comboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
 
 	}
 	
-	public JComboBox getComboBox_1() {
+	public JComboBox<DBProp> getComboBox_1() {
 		return comboBox_1;
 	}
-	public JComboBox getComboBox() {
+	public JComboBox<DBProp> getComboBox() {
 		return comboBox;
 	}
 }

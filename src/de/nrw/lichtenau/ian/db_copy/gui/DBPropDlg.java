@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
 
+@SuppressWarnings("serial")
 public class DBPropDlg extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -104,6 +105,13 @@ public class DBPropDlg extends JDialog {
 				
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
+						if(dbprop == null) {
+							dbprop = new DBProp();
+							ConfUtil.verb.add(dbprop);
+							
+						}
+
 						
 						dbprop.setDriver(textFieldDriver.getText());
 						dbprop.setName(textFieldName.getText());
