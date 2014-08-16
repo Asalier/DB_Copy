@@ -6,6 +6,16 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.PreferencesFactory;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
@@ -29,8 +39,8 @@ public class Window {
 
 	private JFrame frmDbCopy;
 	final JList<DBProp> list = new JList<>();
-	private JComboBox<DBProp> comboBox_1;
-	private JComboBox<DBProp> comboBox;
+	private JComboBox<DBProp> sourceDBcomboBox;
+	private JComboBox<DBProp> TargetDBcomboBox;
 
 	/**
 	 * Launch the application.
@@ -63,27 +73,27 @@ public class Window {
 		frmDbCopy.setTitle("DB Copy");
 		frmDbCopy.setBounds(100, 100, 450, 300);
 		frmDbCopy.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		frmDbCopy.getContentPane().add(panel, BorderLayout.WEST);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel northPanel = new JPanel();
 		panel.add(northPanel, BorderLayout.NORTH);
 		northPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JLabel lblNewLabel = new JLabel("Datenbankverbindungen");
 		northPanel.add(lblNewLabel, BorderLayout.NORTH);
-		
+
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		northPanel.add(toolBar, BorderLayout.SOUTH);
-		
+
 		JButton btnNew = new JButton("");
 		btnNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DBPropDlg propDlg=new DBPropDlg();
+				DBPropDlg propDlg = new DBPropDlg();
 				propDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				propDlg.getTextFieldName();
 				propDlg.getTextFieldDriver();
@@ -92,20 +102,19 @@ public class Window {
 				propDlg.getTextFieldUser();
 				propDlg.setDbprop(null);
 				propDlg.setWindow(Window.this);
-				propDlg.setVisible(true);				
-				
+				propDlg.setVisible(true);
+
 			}
 		});
 		btnNew.setToolTipText("Neu ...");
 		btnNew.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/New16.gif")));
 		toolBar.add(btnNew);
-		
-		
+
 		JButton btnEdit = new JButton("");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (list.getSelectedValue() != null) {
-					DBPropDlg propDlg=new DBPropDlg();
+					DBPropDlg propDlg = new DBPropDlg();
 					propDlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					DBProp auswahl = (DBProp) list.getSelectedValue();
 					propDlg.getTextFieldName().setText(auswahl.getName());
@@ -116,7 +125,7 @@ public class Window {
 					propDlg.setDbprop(auswahl);
 					propDlg.setWindow(Window.this);
 					propDlg.setVisible(true);
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(frmDbCopy, "Bitte wählen sie erst eine Datenbankverbindung aus.");
 				}
 			}
@@ -124,78 +133,170 @@ public class Window {
 		btnEdit.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/Edit16.gif")));
 		btnEdit.setToolTipText("Ändern ...");
 		toolBar.add(btnEdit);
-		
+
 		JButton btnDelete = new JButton("");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// list.remove(list.getSelectedValue());
+			}
+		});
 		btnDelete.setIcon(new ImageIcon(Window.class.getResource("/toolbarButtonGraphics/general/Delete16.gif")));
 		btnDelete.setToolTipText("Löschen");
 		toolBar.add(btnDelete);
-		
+
 		try {
 			ConfUtil.readconf();
 		} catch (IOException e) {
-//			 fixme ian : joptionpane statt printstacktrace 
+			// fixme ian : joptionpane statt printstacktrace
 			e.printStackTrace();
 		}
-		
+
 		panel.add(list, BorderLayout.CENTER);
-		
+
 		JPanel panel_1 = new JPanel();
 		frmDbCopy.getContentPane().add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new GridLayout(3, 0, 0, 0));
-		
+
 		JPanel panel_2 = new JPanel();
 		panel_1.add(panel_2);
-		
+
 		JLabel lblQuelle = new JLabel("Quelle");
 		panel_2.add(lblQuelle);
-		
-		comboBox_1 = new JComboBox<>();
-		panel_2.add(comboBox_1);
-		
+
+		sourceDBcomboBox = new JComboBox<>();
+		panel_2.add(sourceDBcomboBox);
+
 		JLabel lblZiel = new JLabel("Ziel");
 		panel_2.add(lblZiel);
-		
-		comboBox = new JComboBox<>();
-		panel_2.add(comboBox);
-		
+
+		TargetDBcomboBox = new JComboBox<>();
+		panel_2.add(TargetDBcomboBox);
+
 		JPanel panel_3 = new JPanel();
 		panel_1.add(panel_3);
-		
-		JProgressBar progressBar = new JProgressBar();
-		panel_3.add(progressBar);
-		
-		JProgressBar progressBar_1 = new JProgressBar();
-		panel_3.add(progressBar_1);
-		
+
+		JProgressBar currenttableprogressBar = new JProgressBar();
+		panel_3.add(currenttableprogressBar);
+
+		JProgressBar allprogressBar = new JProgressBar();
+		panel_3.add(allprogressBar);
+
 		JPanel panel_4 = new JPanel();
 		panel_1.add(panel_4);
-		
+
 		JButton btnNewButton = new JButton("Kopieren");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DBProp sconn = (DBProp) sourceDBcomboBox.getSelectedItem();
+				DBProp tconn = (DBProp) TargetDBcomboBox.getSelectedItem();
+				try {
+					Class.forName(((DBProp) tconn).getDriver());
+					Class.forName(((DBProp) sconn).getDriver());
+
+					try (
+							Connection scon = DriverManager.getConnection(sconn.getUrl(), sconn.getUser(), sconn.getPass());
+							Connection tcon = DriverManager.getConnection(tconn.getUrl(), tconn.getUser(), tconn.getPass());
+						) {
+						DatabaseMetaData smeta = scon.getMetaData();
+						DatabaseMetaData tmeta = tcon.getMetaData();
+						try (ResultSet sres = smeta.getTables(null, null, "%", null)) {
+							while (sres.next()) {
+								String tabellenname = sres.getString("table_name");
+								try (ResultSet tres = tmeta.getTables(null, null, tabellenname, null)) {
+									if (tres.next()) {
+										List<String> sColumnNames = getColumnNames(tabellenname, smeta);
+										List<String> tColumnNames = getColumnNames(tabellenname, tmeta);
+										List<String> stColumnNames = new ArrayList<String>();
+
+										for (String temp : sColumnNames) {
+											for (String temp2 : tColumnNames) {
+												if (temp.equals(temp2)) {
+													stColumnNames.add(temp);
+												}
+											}
+										}
+//										JOptionPane.showMessageDialog(frmDbCopy, stColumnNames);
+										
+//										select Feld1, Feld2, ..., Feld n from Tabellenname;
+//										insert into Tabellenname Feld1, Feld2, ..., Feld n values value1, value2, ..., value n;
+										Statement select = scon.createStatement();
+										String felderliste="";
+										String fragezeichenliste = "";
+										for(String columnName : stColumnNames) {
+											felderliste += ", ";
+											felderliste += columnName;
+											fragezeichenliste += ",?";
+										}
+										felderliste = felderliste.replaceFirst(",", "");
+										fragezeichenliste = fragezeichenliste.replaceFirst(",", "");
+										try (ResultSet cont = select.executeQuery("select "+felderliste+" from "+tabellenname)) {
+											//1, Königstr., 18, 33165,
+											//insert into tabellenname (Feld1, Feld2, ..., Feld n) values (1, 'Königstr', 18, 33165, ...)
+											//insert into tabellenname (Feld1, Feld2, ..., Feld n) values (?,?,? , ...)
+											
+											PreparedStatement insert = tcon.prepareStatement("insert into "+tabellenname+" ("+felderliste+") values ("+fragezeichenliste+")");
+											while (cont.next()) {
+												for(int i = 1 ; i <= stColumnNames.size(); i++) {
+													insert.setObject(i,cont.getObject(i));
+												}
+												insert.execute();
+											}
+										}
+									}else {
+										System.out.println("Tabelle '"+tabellenname+"' ist in Zieldatenbank nicht vorhanden");
+									}
+								}
+							}
+						}
+					} catch (SQLException e) {
+						JOptionPane.showMessageDialog(frmDbCopy, e.getMessage());
+						e.printStackTrace();
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
 		panel_4.add(btnNewButton);
-		
+
 		refresh();
 	}
-	
-	public void refresh(){
+
+	public void refresh() {
 		@SuppressWarnings("serial")
-		AbstractListModel<DBProp> myListModel=new AbstractListModel<DBProp>() {
+		AbstractListModel<DBProp> myListModel = new AbstractListModel<DBProp>() {
 			public int getSize() {
 				return ConfUtil.verb.size();
 			}
+
 			public DBProp getElementAt(int index) {
 				return ConfUtil.verb.get(index);
 			}
 		};
 		list.setModel(myListModel);
-		comboBox_1.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
-		comboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
+		sourceDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
+		TargetDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
 
 	}
-	
+
 	public JComboBox<DBProp> getComboBox_1() {
-		return comboBox_1;
+		return sourceDBcomboBox;
 	}
+
 	public JComboBox<DBProp> getComboBox() {
-		return comboBox;
+		return TargetDBcomboBox;
+	}
+
+	private List<String> getColumnNames(String tabellenname, DatabaseMetaData meta) throws SQLException {
+		List<String> columnNames = new ArrayList<>(); 
+		try (ResultSet res2 = meta.getColumns(null, null, tabellenname, "%")) {
+
+			while (res2.next()) {
+				columnNames.add(res2.getString("column_name"));
+			}
+		}
+		return columnNames;
 	}
 }
