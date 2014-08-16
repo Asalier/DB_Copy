@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.PreferencesFactory;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
@@ -30,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
@@ -175,7 +175,7 @@ public class Window {
 		JPanel panel_3 = new JPanel();
 		panel_1.add(panel_3);
 
-		JProgressBar currenttableprogressBar = new JProgressBar();
+		final JProgressBar currenttableprogressBar = new JProgressBar();
 		panel_3.add(currenttableprogressBar);
 
 		JProgressBar allprogressBar = new JProgressBar();
@@ -204,6 +204,11 @@ public class Window {
 								String tabellenname = sres.getString("table_name");
 								try (ResultSet tres = tmeta.getTables(null, null, tabellenname, null)) {
 									if (tres.next()) {
+										//select count('x' from tabellename)
+										
+										currenttableprogressBar.setMaximum(getRowCount(scon, tabellenname));
+										currenttableprogressBar.setValue(0);
+										
 										List<String> sColumnNames = getColumnNames(tabellenname, smeta);
 										List<String> tColumnNames = getColumnNames(tabellenname, tmeta);
 										List<String> stColumnNames = new ArrayList<String>();
@@ -239,6 +244,13 @@ public class Window {
 												for(int i = 1 ; i <= stColumnNames.size(); i++) {
 													insert.setObject(i,cont.getObject(i));
 												}
+												
+										        SwingUtilities.invokeLater(new Runnable() {
+										            @Override
+										            public void run() {
+														currenttableprogressBar.setValue(currenttableprogressBar.getValue()+1);
+										            }
+										        });
 												insert.execute();
 											}
 										}
@@ -256,6 +268,14 @@ public class Window {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+
+			private int getRowCount(Connection scon, String tabellenname) throws SQLException {
+				Statement select = scon.createStatement();
+				ResultSet rowCount = select.executeQuery("select count('x') from "+tabellenname);
+				rowCount.next();
+				return rowCount.getInt(1);
+				
 			}
 
 		});
