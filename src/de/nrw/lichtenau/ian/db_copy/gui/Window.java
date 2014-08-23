@@ -266,6 +266,7 @@ public class Window {
 					DatabaseMetaData smeta = scon.getMetaData();
 					DatabaseMetaData tmeta = tcon.getMetaData();
 					try (ResultSet sres = smeta.getTables(null, null, "%", null)) {
+//						String tabels = sres.getString("table_name");
 						while (sres.next()) {
 							String tabellenname = sres.getString("table_name");
 							try (ResultSet tres = tmeta.getTables(null, null, tabellenname, null)) {
@@ -278,6 +279,12 @@ public class Window {
 									invoker.currenttableprogressBar.setValue(0);
 					            	invoker.currenttableprogressBar.setString(invoker.currenttableprogressBar.getValue()+"/"+invoker.currenttableprogressBar.getMaximum());
 									invoker.currenttableprogressBar.setStringPainted(true);
+
+//									invoker.allprogressBar.setMaximum(getRowCount(scon, tabels));
+//									invoker.allprogressBar.setValue(0);
+//					            	invoker.allprogressBar.setString(invoker.allprogressBar.getValue()+"/"+invoker.allprogressBar.getMaximum());
+//									invoker.allprogressBar.setStringPainted(true);
+
 									System.out.println("Progressbar initialisiert ...");
 									
 									List<String> sColumnNames = getColumnNames(tabellenname, smeta);
@@ -326,6 +333,9 @@ public class Window {
 //									        System.out.println("nach invokeLater Progressbar-Update ...");
 							            	invoker.currenttableprogressBar.setValue(invoker.currenttableprogressBar.getValue()+1);
 							            	invoker.currenttableprogressBar.setString(invoker.currenttableprogressBar.getValue()+"/"+invoker.currenttableprogressBar.getMaximum());
+
+//							            	invoker.allprogressBar.setValue(invoker.allprogressBar.getValue()+1);
+//							            	invoker.allprogressBar.setString(invoker.allprogressBar.getValue()+"/"+invoker.allprogressBar.getMaximum());
 //									        System.out.println("nach Progressbar-Update ...");
 							            	insert.execute();
 										}
