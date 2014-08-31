@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.MessageDlgController">
+   <center>
+      <TextFlow fx:id="messagePane" prefHeight="20.0" prefWidth="200.0" style="-fx-background-color: lightgray;" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <Button mnemonicParsing="false" onAction="#onActionOk" text="Ok" BorderPane.alignment="CENTER" />
+   </bottom>
+   <left>
+      <ImageView fx:id="typeIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+   </left>
+</BorderPane>

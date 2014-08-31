@@ -20,9 +20,14 @@ public class DBPropDlgController implements Controller {
 
 	private Stage stage;
 
-	@Override
-	public void setStage(Stage stage) {
+    @Override
+    public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	@Override
+	public Stage getStage() {
+		return this.stage;
 	}
 	
 	public void initialize() {
@@ -31,8 +36,9 @@ public class DBPropDlgController implements Controller {
 
     @FXML
     void onActionOk(ActionEvent event) {
+    	FXOptionPane.showMessageDlg(stage, "Hinweis", txtFldName.getText());
     	System.out.println(txtFldName.getText());
-    	stage.close();
+    	stage.hide();
 
     }
 

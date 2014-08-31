@@ -214,16 +214,16 @@ public class Window {
 		@SuppressWarnings("serial")
 		AbstractListModel<DBProp> myListModel = new AbstractListModel<DBProp>() {
 			public int getSize() {
-				return ConfUtil.verb.size();
+				return ConfUtil.conn.size();
 			}
 
 			public DBProp getElementAt(int index) {
-				return ConfUtil.verb.get(index);
+				return ConfUtil.conn.get(index);
 			}
 		};
 		list.setModel(myListModel);
-		sourceDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
-		TargetDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.verb.toArray(new DBProp[ConfUtil.verb.size()])));
+		sourceDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.conn.toArray(new DBProp[ConfUtil.conn.size()])));
+		TargetDBcomboBox.setModel(new DefaultComboBoxModel<DBProp>(ConfUtil.conn.toArray(new DBProp[ConfUtil.conn.size()])));
 
 	}
 

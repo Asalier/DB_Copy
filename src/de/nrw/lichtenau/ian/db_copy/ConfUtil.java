@@ -13,11 +13,11 @@ import java.util.List;
 //TODO mars: static erzwingen
 //TODO mars: /home/ian -> ermitteln DONE
 public class ConfUtil {
-	public static List<DBProp> verb;
+	public static List<DBProp> conn;
 	
 	public static void readconf() throws IOException {		
 		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/con.ini"))){
-			verb = new ArrayList<>();
+			conn = new ArrayList<>();
 			String line = "";
 			DBProp con = null;
 			while (true) {
@@ -28,7 +28,7 @@ public class ConfUtil {
 				if (line.startsWith("[DB_")){
 					con = new DBProp();
 					con.setName(line.substring(4, line.length()-1));
-					verb.add(con);
+					conn.add(con);
 				}else{
 					String[] kv=line.split("=");
 					switch(kv[0]){
@@ -53,7 +53,7 @@ public class ConfUtil {
 	}
 	public static void writeconf() throws FileNotFoundException {
 		try (PrintWriter w = new PrintWriter(System.getProperty("user.home") + "/con.ini" , "UTF-8")){
-			for(DBProp ver: verb) {
+			for(DBProp ver: conn) {
 				w.println("[DB_" + ver.getName() + "]");
 				w.println("URL=" + ver.getUrl());
 				w.println("JDBC_Driver=" + ver.getDriver());

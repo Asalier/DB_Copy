@@ -108,7 +108,7 @@ public class DBPropDlg extends JDialog {
 						
 						if(dbprop == null) {
 							dbprop = new DBProp();
-							ConfUtil.verb.add(dbprop);
+							ConfUtil.conn.add(dbprop);
 							
 						}
 
