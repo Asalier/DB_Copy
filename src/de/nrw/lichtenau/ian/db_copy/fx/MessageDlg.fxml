@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.MessageDlgController">
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.MessageDlgController">
    <center>
       <TextFlow fx:id="messagePane" prefHeight="20.0" prefWidth="200.0" style="-fx-background-color: lightgray;" BorderPane.alignment="CENTER" />
    </center>

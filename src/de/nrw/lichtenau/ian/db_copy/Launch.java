@@ -3,7 +3,6 @@ package de.nrw.lichtenau.ian.db_copy;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import de.nrw.lichtenau.ian.db_copy.fx.FXUtil;
 import de.nrw.lichtenau.ian.db_copy.fx.WindowController;

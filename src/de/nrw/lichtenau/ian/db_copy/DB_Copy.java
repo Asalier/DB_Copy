@@ -1,13 +1,7 @@
 package de.nrw.lichtenau.ian.db_copy;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import de.nrw.lichtenau.ian.db_copy.gui.Window;
 
 public class DB_Copy {
 	

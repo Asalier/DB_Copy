@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="517.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.WindowController">
+<BorderPane fx:id="root" prefHeight="517.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.WindowController">
    <center>
       <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -18,7 +18,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../resources/icons/new.png" />
+                                    <Image url="@../../../../../../resources/icons/add.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -27,7 +27,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../../../bilder/edit.png" />
+                                    <Image url="@../../../../../../resources/icons/edit.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -36,7 +36,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../../../bilder/delete.png" />
+                                    <Image url="@../../../../../../resources/icons/delete.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -45,7 +45,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../../../bilder/copy.png" />
+                                    <Image url="@../../../../../../resources/icons/copy.png" />
                                  </image>
                               </ImageView>
                            </graphic>

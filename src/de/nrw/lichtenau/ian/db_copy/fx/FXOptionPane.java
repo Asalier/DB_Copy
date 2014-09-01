@@ -1,5 +1,7 @@
 package de.nrw.lichtenau.ian.db_copy.fx;
 
+import java.io.IOException;
+
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,7 +27,7 @@ public class FXOptionPane {
 			controller.getMessagePane().getChildren().add(new Text(message));
 			controller.getStage().showAndWait();
 	
-		}catch(Exception e) {
+		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}

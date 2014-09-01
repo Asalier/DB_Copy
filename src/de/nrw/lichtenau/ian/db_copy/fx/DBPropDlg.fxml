@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="145.0" prefWidth="288.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.DBPropDlgController">
+<BorderPane fx:id="root" prefHeight="145.0" prefWidth="288.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.DBPropDlgController">
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>

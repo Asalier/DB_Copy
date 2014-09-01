@@ -4,12 +4,14 @@ package de.nrw.lichtenau.ian.db_copy.fx;
  * Sample Skeleton for 'Window.fxml' Controller Class
  */
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -19,9 +21,14 @@ import javafx.stage.Stage;
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
 
-public class WindowController implements Controller {
-	private Stage stage;
-
+public class WindowController {
+	@FXML
+	private Parent root;
+	
+	public Stage getStage() {
+		return (Stage) root.getScene().getWindow();
+	}
+	
     @FXML // fx:id="sourceComboBox"
     private ComboBox<DBProp> sourceComboBox; // Value injected by FXMLLoader
 
@@ -40,16 +47,6 @@ public class WindowController implements Controller {
     @FXML // fx:id="connectionList"
     private ListView<DBProp> connectionList; // Value injected by FXMLLoader
     
-    @Override
-    public void setStage(Stage stage) {
-		this.stage = stage;
-	}
-
-	@Override
-	public Stage getStage() {
-		return this.stage;
-	}
-
 	@FXML
 	// ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
@@ -61,9 +58,10 @@ public class WindowController implements Controller {
 	@FXML
 	void onActionNew(ActionEvent event) {
 		try {
+			Stage stage = getStage();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
 			controller.getStage().show();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -72,9 +70,10 @@ public class WindowController implements Controller {
 	@FXML
 	void onActionEdit(ActionEvent event) {
 		try {
+			Stage stage = (Stage) root.getScene().getWindow();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
 			controller.getStage().show();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
