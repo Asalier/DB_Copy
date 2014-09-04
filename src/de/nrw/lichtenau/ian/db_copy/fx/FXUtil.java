@@ -2,6 +2,7 @@ package de.nrw.lichtenau.ian.db_copy.fx;
 
 import java.io.IOException;
 
+import de.nrw.lichtenau.ian.db_copy.DBProp;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;

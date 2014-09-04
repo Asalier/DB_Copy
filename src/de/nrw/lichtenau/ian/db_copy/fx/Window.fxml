@@ -69,6 +69,7 @@
                   <Label layoutX="157.0" layoutY="201.0" text="All Tables" />
                   <Button layoutX="157.0" layoutY="462.0" mnemonicParsing="false" onAction="#onActionCopyDB" text="Copy" />
                   <CheckBox fx:id="truncateTargetTableCheckBox" layoutX="103.0" layoutY="116.0" mnemonicParsing="false" text="Truncate Targettables" />
+                  <Button fx:id="about" layoutX="304.0" layoutY="14.0" mnemonicParsing="false" onAction="#onActionAbout" text="About" />
                </children>
             </Pane>
         </items>

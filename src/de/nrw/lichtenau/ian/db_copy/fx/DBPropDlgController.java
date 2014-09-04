@@ -1,5 +1,9 @@
 package de.nrw.lichtenau.ian.db_copy.fx;
 
+import java.sql.Connection;
+
+import com.sun.javafx.font.Disposer;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -14,6 +18,7 @@ public class DBPropDlgController {
 		return (Stage) root.getScene().getWindow();
 	}
 	
+	
     @FXML
     private TextField txtFldName;
 
@@ -26,11 +31,7 @@ public class DBPropDlgController {
     @FXML
     private TextField txtFldURL;
 
-	public void initialize() {
-		txtFldName.setText("Yo - Alter");
-	}
-
-    @FXML
+	@FXML
     void onActionOk(ActionEvent event) {
 		Stage stage = getStage();
     	FXOptionPane.showMessageDlg(stage, "Hinweis", txtFldName.getText());
@@ -43,4 +44,5 @@ public class DBPropDlgController {
     void onActionCancel(ActionEvent event) {
 
     }
+    
 }

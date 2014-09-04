@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -47,6 +48,9 @@ public class WindowController {
     @FXML // fx:id="connectionList"
     private ListView<DBProp> connectionList; // Value injected by FXMLLoader
     
+    @FXML
+    private Button about;
+    
 	@FXML
 	// ResourceBundle that was given to the FXMLLoader
 	private ResourceBundle resources;
@@ -55,11 +59,13 @@ public class WindowController {
 	// URL location of the FXML file that was given to the FXMLLoader
 	private URL location;
 
+	
 	@FXML
 	void onActionNew(ActionEvent event) {
 		try {
 			Stage stage = getStage();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+			
 			controller.getStage().show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -71,6 +77,7 @@ public class WindowController {
 	void onActionEdit(ActionEvent event) {
 		try {
 			Stage stage = (Stage) root.getScene().getWindow();
+			
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
 			controller.getStage().show();
 		} catch (IOException e) {
@@ -81,11 +88,19 @@ public class WindowController {
 
 	@FXML
 	void onActionDelete(ActionEvent event) {
-
+		
 	}
 
 	@FXML
 	void onActionCopy(ActionEvent event) {
+		try {
+			Stage stage = (Stage) root.getScene().getWindow();
+			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+			controller.getStage().show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -100,6 +115,20 @@ public class WindowController {
 
     }
 
+
+    @FXML
+    void onActionAbout(ActionEvent event) {
+		try {
+			Stage stage = (Stage) root.getScene().getWindow();
+			AboutBoxController controller=FXUtil.createWindow(stage, "About", Modality.APPLICATION_MODAL, AboutBoxController.class);
+			controller.getStage().show();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
+    
 	@FXML
 	// This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
@@ -111,5 +140,8 @@ public class WindowController {
         assert connectionList != null : "fx:id=\"connectionList\" was not injected: check your FXML file 'Window.fxml'.";
 
         connectionList.setItems(FXCollections.observableArrayList(ConfUtil.conn));
+        sourceComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
+        targetComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
+        
 	}
 }

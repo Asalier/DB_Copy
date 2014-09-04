@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="272.0" layoutY="7.0" text="DB Copy" />
+      <Label layoutX="14.0" layoutY="51.0" text="Author :" />
+      <Label layoutX="156.0" layoutY="51.0" text="Ian Schulz" />
+      <Label layoutX="14.0" layoutY="73.0" text="Version :" />
+      <Label layoutX="14.0" layoutY="97.0" text="Software license :" />
+      <Label layoutX="156.0" layoutY="97.0" text="GPL" />
+      <Label layoutX="156.0" layoutY="73.0" text="Label" />
+   </children>
+</Pane>
