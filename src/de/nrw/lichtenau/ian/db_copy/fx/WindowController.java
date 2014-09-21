@@ -4,9 +4,21 @@ package de.nrw.lichtenau.ian.db_copy.fx;
  * Sample Skeleton for 'Window.fxml' Controller Class
  */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -58,14 +70,15 @@ public class WindowController {
 	@FXML
 	// URL location of the FXML file that was given to the FXMLLoader
 	private URL location;
-
 	
 	@FXML
 	void onActionNew(ActionEvent event) {
 		try {
 			Stage stage = getStage();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
-			
+
+			controller.setAuswahl(null, false);
+
 			controller.getStage().show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -75,44 +88,132 @@ public class WindowController {
 
 	@FXML
 	void onActionEdit(ActionEvent event) {
-		try {
-			Stage stage = (Stage) root.getScene().getWindow();
+		if(connectionList.getSelectionModel().getSelectedItem() != null) {
 			
-			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
-			controller.getStage().show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+			try {
+				Stage stage = (Stage) root.getScene().getWindow();
+				
+				DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+				DBProp auswahl = connectionList.getSelectionModel().getSelectedItem();
+				
+				controller.setAuswahl(auswahl, false);
+
+				controller.getStage().show();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+//			FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+			System.out.println("Select a connection first.");
 		}
 	}
 
 	@FXML
 	void onActionDelete(ActionEvent event) {
-		
+		if(connectionList.getSelectionModel().getSelectedItem() != null) {
+			DBProp auswahl = connectionList.getSelectionModel().getSelectedItem();
+			ConfUtil.conn.remove(auswahl);
+			try {
+				ConfUtil.writeconf();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+//			FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+			System.out.println("Select a connection first.");
+		}
+//		FIXME ian liste neu aufbauen
 	}
 
 	@FXML
 	void onActionCopy(ActionEvent event) {
-		try {
-			Stage stage = (Stage) root.getScene().getWindow();
-			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
-			controller.getStage().show();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		if(connectionList.getSelectionModel().getSelectedItem() != null) {
+			try {
+				Stage stage = (Stage) root.getScene().getWindow();
+				DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+				DBProp auswahl = connectionList.getSelectionModel().getSelectedItem();
+				
+				controller.setAuswahl(auswahl, true);
+				
+				controller.getStage().show();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+//				FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+				System.out.println("Select a connection first.");
+			}
+			//		FIXME ian copie verpassen
 	}
 	
     @FXML
     void onActionCopyDB(ActionEvent event) {
 
-//    	if(truncateTargetTableCheckBox.isSelected()) {
-//			Statement truncate=tcon.createStatement();
-//			truncate.executeUpdate("truncate table "+tabellenname);
-//
-//    	}
+    	DBProp sconn = sourceComboBox.getSelectionModel().getSelectedItem();
+    	DBProp tconn = targetComboBox.getSelectionModel().getSelectedItem();
+		Map<String, List<String>> ttablestructures= new HashMap<>();
+		Map<String, List<String>> stablestructures= new HashMap<>();
+    	
+    		try {
+    			Class.forName(((DBProp) tconn).getDriver());
+    			Class.forName(((DBProp) sconn).getDriver());
+    			
+				try (
+						Connection scon = DriverManager.getConnection(sconn.getUrl(), sconn.getUser(), sconn.getPass());
+						Connection tcon = DriverManager.getConnection(tconn.getUrl(), tconn.getUser(), tconn.getPass());
+					){
+					DatabaseMetaData smeta = scon.getMetaData();
+					DatabaseMetaData tmeta = tcon.getMetaData();
+						try(ResultSet sres = smeta.getTables(null, null, "%", null)
+							; ResultSet tres = tmeta.getTables(null, null, "%", null)){
+							while(sres.next()) {
+									String stablename = sres.getString("table_name");
+									stablestructures.put(stablename, new ArrayList<String>());
+									while(tres.next()) {
+											try(ResultSet sres2 = smeta.getColumns(null, null, stablename, "%")){
+												while(sres2.next()) {
+													stablestructures.get(stablename).add(sres2.getString("column_name"));
+												}
+											}
+									}
+							}
+						}
+						try(ResultSet tres = tmeta.getTables(null, null, "%", null)){
+							while(tres.next()) {
+								String ttablename = tres.getString("table_name");
+								ttablestructures.put(ttablename, new ArrayList<String>());
+								try(ResultSet tres2 = tmeta.getColumns(null, null, ttablename, "%")){
+									while(tres2.next()) {
+										ttablestructures.get(ttablename).add(tres2.getString("column_name"));
+									}
+								}
+							}
+						}
+						Map<String, List<String>> ctablestructures = ttablestructures;
+						ctablestructures.keySet().retainAll(stablestructures.keySet());
+						for(String ctablename : ctablestructures.keySet()) {
+							ctablestructures.get(ctablename).retainAll(stablestructures.get(ctablename));
+						}
+						System.out.println(ctablestructures);
+//FIXME mars: später wieder rein, wenn klar ist, dass die betreffende Tabelle tatsächlich im nächsten Schritt kopiert wird.
+//						if(truncateTargetTableCheckBox.isSelected()) {
+//							Statement truncate=tcon.createStatement();
+//							truncate.executeUpdate("truncate table "+stablename);
+//						}
 
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+    		} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     }
 
 

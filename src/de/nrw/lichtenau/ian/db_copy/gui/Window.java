@@ -5,8 +5,6 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -22,6 +20,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -31,14 +30,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
 
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
-
-import javax.swing.JCheckBox;
 
 public class Window {
 
@@ -286,7 +282,7 @@ public class Window {
 //									invoker.allprogressBar.setStringPainted(true);
 
 									System.out.println("Progressbar initialisiert ...");
-									
+//									FIXME Papa fragen
 									List<String> sColumnNames = getColumnNames(tabellenname, smeta);
 									List<String> tColumnNames = getColumnNames(tabellenname, tmeta);
 									List<String> stColumnNames = new ArrayList<String>();
