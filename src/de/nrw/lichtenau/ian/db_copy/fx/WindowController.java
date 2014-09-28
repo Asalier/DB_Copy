@@ -31,7 +31,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
-import de.nrw.lichtenau.ian.db_copy.fx.FXOptionPane.MESSAGE_TYPE;
 
 public class WindowController {
 	@FXML
@@ -75,6 +74,23 @@ public class WindowController {
 		try {
 			Stage stage = getStage();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+//			BUTTON clicked=FXOptionPane.showConfirmErrorYesNoCancelDlg(getStage(), "Truncate Table", "Delete target table content first?");
+//			if(clicked!=null) {
+//				switch (clicked) {
+//				case CANCEL:
+//					FXOptionPane.showMessageDlg(getStage(), "CANCEL", "Cancel clicked");
+//					break;
+//				case NO:
+//					FXOptionPane.showMessageDlg(getStage(), "NO", "No clicked");
+//					break;
+//				case OK:
+//					FXOptionPane.showMessageDlg(getStage(), "OK", "Ok clicked");
+//					break;
+//				case YES:
+//					FXOptionPane.showMessageDlg(getStage(), "YES", "Yes clicked");
+//					break;
+//				}
+//			}
 
 			controller.setAuswahl(null, false);
 

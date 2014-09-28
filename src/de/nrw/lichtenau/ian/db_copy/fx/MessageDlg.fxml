@@ -16,10 +16,23 @@
          </BorderPane.margin></TextFlow>
    </center>
    <bottom>
-      <Button defaultButton="true" mnemonicParsing="false" onAction="#onActionOk" text="Ok" BorderPane.alignment="CENTER">
+      <HBox fx:id="btnPane" alignment="CENTER" spacing="5.0">
+         <children>
+            <Button fx:id="btnOk" defaultButton="true" mnemonicParsing="false" onAction="#onActionOk" text="Ok" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="5.0" />
+               </BorderPane.margin>
+            </Button>
+            <Button fx:id="btnNo" mnemonicParsing="false" onAction="#onActionNo" text="No" />
+            <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" onAction="#onActionCancel" text="Cancel" />
+         </children>
          <BorderPane.margin>
             <Insets bottom="5.0" />
-         </BorderPane.margin></Button>
+         </BorderPane.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
    </bottom>
    <left>
       <StackPane>
