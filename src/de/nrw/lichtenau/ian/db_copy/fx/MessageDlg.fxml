@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
@@ -9,12 +10,39 @@
 
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.nrw.lichtenau.ian.db_copy.fx.MessageDlgController">
    <center>
-      <TextFlow fx:id="messagePane" prefHeight="20.0" prefWidth="200.0" style="-fx-background-color: lightgray;" BorderPane.alignment="CENTER" />
+      <TextFlow fx:id="messagePane" prefHeight="20.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+         </BorderPane.margin></TextFlow>
    </center>
    <bottom>
-      <Button mnemonicParsing="false" onAction="#onActionOk" text="Ok" BorderPane.alignment="CENTER" />
+      <Button defaultButton="true" mnemonicParsing="false" onAction="#onActionOk" text="Ok" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" />
+         </BorderPane.margin></Button>
    </bottom>
    <left>
-      <ImageView fx:id="typeIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+      <StackPane>
+         <children>
+            <ImageView fx:id="iconError" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+               <image>
+                  <Image url="@../../../../../../resources/icons/error.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="iconWarn" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resources/icons/warning.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="iconInfo" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../resources/icons/info.png" />
+               </image>
+            </ImageView>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </StackPane>
    </left>
 </BorderPane>

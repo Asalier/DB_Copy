@@ -33,6 +33,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import de.nrw.lichtenau.ian.db_copy.ConfUtil;
 import de.nrw.lichtenau.ian.db_copy.DBProp;
+import de.nrw.lichtenau.ian.db_copy.fx.FXOptionPane.MESSAGE_TYPE;
 
 public class WindowController {
 	@FXML
@@ -105,7 +106,7 @@ public class WindowController {
 				e.printStackTrace();
 			}
 		}else {
-//			FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+			FXOptionPane.showMessageDlg(getStage(), "No selection", "Nothing is selected. Please select a connection first.");
 			System.out.println("Select a connection first.");
 		}
 	}
@@ -122,7 +123,7 @@ public class WindowController {
 				e.printStackTrace();
 			}
 		}else {
-//			FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+			FXOptionPane.showMessageDlg(getStage(), "No selection", "Nothing is selected. Please select a connection first.");
 			System.out.println("Select a connection first.");
 		}
 //		FIXME ian liste neu aufbauen
@@ -144,7 +145,7 @@ public class WindowController {
 				e.printStackTrace();
 			}
 		}else {
-//				FXOptionPane.showMessageDlg(root, MESSAGE_TYPE.INFO, "No selection", "Nothing is selected. Please select a connection first.");
+				FXOptionPane.showMessageDlg(getStage(), "No selection", "Nothing is selected. Please select a connection first.");
 				System.out.println("Select a connection first.");
 			}
 			//		FIXME ian copie verpassen
@@ -267,11 +268,9 @@ public class WindowController {
         assert currentTableProgressBar != null : "fx:id=\"currentTableProgressBar\" was not injected: check your FXML file 'Window.fxml'.";
         assert allTableProgressBar != null : "fx:id=\"allTableProgressBar\" was not injected: check your FXML file 'Window.fxml'.";
         assert connectionList != null : "fx:id=\"connectionList\" was not injected: check your FXML file 'Window.fxml'.";
-
         connectionList.setItems(FXCollections.observableArrayList(ConfUtil.conn));
         sourceComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
         targetComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
-        
 	}
 
 	private int getRowCount(Connection scon, String stablename) throws SQLException {

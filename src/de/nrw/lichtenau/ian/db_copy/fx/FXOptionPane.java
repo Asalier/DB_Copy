@@ -10,11 +10,11 @@ public class FXOptionPane {
 	enum MESSAGE_TYPE {ERROR,WARN,INFO}
 	
 	public static void showWarningDlg(Stage parent, String title, String message) {
-		
+		FXOptionPane.showMessageDlg(parent, MESSAGE_TYPE.WARN, title, message);
 	}
 
 	public static void showErrorDlg(Stage parent, String title, String message) {
-		
+		FXOptionPane.showMessageDlg(parent, MESSAGE_TYPE.ERROR, title, message);
 	}
 
 	public static void showMessageDlg(Stage parent, String title, String message) {
@@ -24,6 +24,7 @@ public class FXOptionPane {
 	public static void showMessageDlg(Stage parent, MESSAGE_TYPE type, String title, String message) {
 		try {
 			MessageDlgController controller=FXUtil.createWindow(parent, title, Modality.APPLICATION_MODAL, MessageDlgController.class);
+			controller.setType(type);
 			controller.getMessagePane().getChildren().add(new Text(message));
 			controller.getStage().showAndWait();
 	
