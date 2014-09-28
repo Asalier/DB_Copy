@@ -10,10 +10,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +74,10 @@ public class WindowController {
 		try {
 			Stage stage = getStage();
 			DBPropDlgController controller=FXUtil.createWindow(stage, "DB Properties", Modality.APPLICATION_MODAL, DBPropDlgController.class);
+//			String answer=FXOptionPane.showPromptDlg(getStage(), "Sure?", "If you are sure, type 'YES'!");
+//			if(answer!=null) {
+//				FXOptionPane.showMessageDlg(getStage(), "Answer", "You typed: "+answer);
+//			}
 //			BUTTON clicked=FXOptionPane.showConfirmErrorYesNoCancelDlg(getStage(), "Truncate Table", "Delete target table content first?");
 //			if(clicked!=null) {
 //				switch (clicked) {
@@ -174,9 +176,7 @@ public class WindowController {
     	DBProp tconn = targetComboBox.getSelectionModel().getSelectedItem();
 		Map<String, List<String>> ttablestructures= new HashMap<>();
 		Map<String, List<String>> stablestructures= new HashMap<>();
-		Map<String, List<String>> ctablestructures = new HashMap<>();
-		String stablename = "";
-		int max = 0;
+    	
     		try {
     			Class.forName(((DBProp) tconn).getDriver());
     			Class.forName(((DBProp) sconn).getDriver());
@@ -189,61 +189,35 @@ public class WindowController {
 					DatabaseMetaData tmeta = tcon.getMetaData();
 						try(ResultSet sres = smeta.getTables(null, null, "%", null)
 							; ResultSet tres = tmeta.getTables(null, null, "%", null)){
-							currentTableProgressBar.setProgress(0);
-							allTableProgressBar.setProgress(0);
 							while(sres.next()) {
-								stablename = sres.getString("table_name");
-								stablestructures.put(stablename, new ArrayList<String>());
-								try(ResultSet sres2 = smeta.getColumns(null, null, stablename, "%")){
-									while(sres2.next()) {
-										stablestructures.get(stablename).add(sres2.getString("column_name"));
+									String stablename = sres.getString("table_name");
+									stablestructures.put(stablename, new ArrayList<String>());
+									while(tres.next()) {
+											try(ResultSet sres2 = smeta.getColumns(null, null, stablename, "%")){
+												while(sres2.next()) {
+													stablestructures.get(stablename).add(sres2.getString("column_name"));
+												}
+											}
 									}
-								}
 							}
-							max = getRowCount(scon, stablename);
 						}
 						try(ResultSet tres = tmeta.getTables(null, null, "%", null)){
 							while(tres.next()) {
 								String ttablename = tres.getString("table_name");
 								ttablestructures.put(ttablename, new ArrayList<String>());
-								ctablestructures.put(ttablename, new ArrayList<String>());
 								try(ResultSet tres2 = tmeta.getColumns(null, null, ttablename, "%")){
 									while(tres2.next()) {
 										ttablestructures.get(ttablename).add(tres2.getString("column_name"));
-										ctablestructures.get(ttablename).add(tres2.getString("column_name"));
 									}
 								}
 							}
 						}
+						Map<String, List<String>> ctablestructures = ttablestructures;
 						ctablestructures.keySet().retainAll(stablestructures.keySet());
 						for(String ctablename : ctablestructures.keySet()) {
 							ctablestructures.get(ctablename).retainAll(stablestructures.get(ctablename));
 						}
-						
-						for(String ctablename : ctablestructures.keySet()) {
-							Statement select = scon.createStatement();
-							String columnlist="";
-							String fragezeichenliste = "";
-							for(String columnName : ctablestructures.get(ctablename)) {
-								columnlist += ", ";
-								columnlist += columnName;
-								fragezeichenliste += ",?";
-							}
-							columnlist = columnlist.replaceFirst(",", "");
-							fragezeichenliste = fragezeichenliste.replaceFirst(",", "");
-							try (ResultSet cont = select.executeQuery("select "+columnlist+" from "+ctablename)) {
-								
-								PreparedStatement insert = tcon.prepareStatement("insert into "+ctablename+" ("+columnlist+") values ("+fragezeichenliste+")");
-								while (cont.next()) {
-									for(int i = 1 ; i <= ctablestructures.get(ctablename).size(); i++) {
-										insert.setObject(i,cont.getObject(i));
-									}
-								insert.execute();
-								currentTableProgressBar.setProgress((currentTableProgressBar.getProgress()+ 1) / max );
-							}
-//								allTableProgressBar.setProgress(value);
-						}
-						}
+						System.out.println(ctablestructures);
 //FIXME mars: später wieder rein, wenn klar ist, dass die betreffende Tabelle tatsächlich im nächsten Schritt kopiert wird.
 //						if(truncateTargetTableCheckBox.isSelected()) {
 //							Statement truncate=tcon.createStatement();
@@ -288,13 +262,4 @@ public class WindowController {
         sourceComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
         targetComboBox.setItems(FXCollections.observableArrayList(ConfUtil.conn));
 	}
-
-	private int getRowCount(Connection scon, String stablename) throws SQLException {
-		Statement select = scon.createStatement();
-		ResultSet rowCount = select.executeQuery("select count('x') from "+stablename);
-		rowCount.next();
-		return rowCount.getInt(1);
-		
-	}
-
 }

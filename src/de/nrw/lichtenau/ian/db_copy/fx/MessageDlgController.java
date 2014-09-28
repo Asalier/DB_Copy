@@ -4,14 +4,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import de.nrw.lichtenau.ian.db_copy.fx.FXOptionPane.BUTTON;
 import de.nrw.lichtenau.ian.db_copy.fx.FXOptionPane.MESSAGE_TYPE;
 
-public class MessageDlgController {
+public final class MessageDlgController {
 	@FXML
 	private Parent root;
 	
@@ -37,7 +39,13 @@ public class MessageDlgController {
     private ImageView iconError;
 
     @FXML
+    private VBox contentPane;
+
+    @FXML
     private TextFlow messagePane;
+
+    @FXML
+    private TextField txtAnswer;
 
     private boolean okButtonIsYesButton;
 	private BUTTON clickedButton;
@@ -97,6 +105,16 @@ public class MessageDlgController {
 		}
 	}
 	
+	public void showAnswerField(boolean show) {
+		if(!show) {
+			contentPane.getChildren().remove(txtAnswer);
+		}
+	}
+	
+	public String getAnswer() {
+		return txtAnswer.getText();
+	}
+	
     @FXML
     void onActionOk(ActionEvent event) {
     	if(okButtonIsYesButton) {
@@ -118,5 +136,4 @@ public class MessageDlgController {
     	clickedButton=BUTTON.CANCEL;
 		getStage().close();
     }
-
 }
