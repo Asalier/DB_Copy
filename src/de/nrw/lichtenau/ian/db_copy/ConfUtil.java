@@ -1,6 +1,7 @@
 package de.nrw.lichtenau.ian.db_copy;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,9 +15,8 @@ import java.util.List;
 //TODO mars: /home/ian -> ermitteln DONE
 public class ConfUtil {
 	public static List<DBProp> conn;
-	
 	public static void readconf() throws IOException {		
-		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/con.ini"))){
+		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/connection.ini"))){
 			conn = new ArrayList<>();
 			String line = "";
 			DBProp con = null;
@@ -48,11 +48,13 @@ public class ConfUtil {
 				}
 			}
 		} catch (FileNotFoundException e) {
-//			Wenn keine Conf datei vorhanden ist dann ist das Programm zum ersten mal gestartet worden. 
+			File file =new File(System.getProperty("user.home") + "/connection.ini");
+			file.createNewFile();
+			readconf();
 		}
 	}
 	public static void writeconf() throws FileNotFoundException {
-		try (PrintWriter w = new PrintWriter(System.getProperty("user.home") + "/con.ini" , "UTF-8")){
+		try (PrintWriter w = new PrintWriter(System.getProperty("user.home") + "/connection.ini" , "UTF-8")){
 			for(DBProp ver: conn) {
 				w.println("[DB_" + ver.getName() + "]");
 				w.println("URL=" + ver.getUrl());

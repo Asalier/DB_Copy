@@ -1,6 +1,6 @@
 <project name="DB Copy" default="dist" basedir=".">
     <description>
-        Database Copy
+        Database Copye
     </description>
 	  <!-- set global properties for this build -->
 	  <property name="src" location="src"/>
@@ -14,14 +14,17 @@
 	    <!-- Create the build directory structure used by compile -->
 	    <mkdir dir="${build}"/>
 	    <mkdir dir="${dist}"/>
+	    <mkdir dir="${dist}/lib/complete"/>
 	  </target>
 
 	  <target name="clean" depends="init" description="clean up">
 	    <!-- Create the build directory structure used by compile -->
 	  	<delete dir="${build}"/>
 	  	<delete dir="${dist}"/>
+	    <delete dir="${dist}/lib/complete"/>
 	    <mkdir dir="${build}"/>
 	    <mkdir dir="${dist}"/>
+	    <mkdir dir="${dist}/lib/complete"/>
 	  </target>
 
   <target name="compile" depends="init" description="compile the source ">
@@ -42,11 +45,19 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/dbcopy-${DSTAMP}.jar" basedir="${build}">
+    <jar jarfile="${dist}/complete/dbcopy.jar" basedir="${build}">
     	<manifest>
+    		<attribute name= "Creation Time" value="${DSTAMP}"/>
     		<attribute name="Main-Class" value="de.nrw.lichtenau.ian.db_copy.Launch"/>
     	</manifest>
    	</jar>
+  	
+    <zip destfile="${dist}/DB_Copy.zip"
+         basedir="${dist}/lib"
+         update="true"
+    />
+  	
+  	
   </target>
 </project>
 

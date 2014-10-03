@@ -176,8 +176,9 @@ public class WindowController {
 		Map<String, List<String>> stablestructures= new HashMap<>();
 		Map<String, List<String>> ctablestructures = new HashMap<>();
 		String stablename = "";
-		int max = 0;
-    		try {
+		int cmax = 0;
+		int amax = 0;
+		try {
     			Class.forName(((DBProp) tconn).getDriver());
     			Class.forName(((DBProp) sconn).getDriver());
     			
@@ -200,7 +201,7 @@ public class WindowController {
 									}
 								}
 							}
-							max = getRowCount(scon, stablename);
+							cmax = getRowCount(scon, stablename);
 						}
 						try(ResultSet tres = tmeta.getTables(null, null, "%", null)){
 							while(tres.next()) {
@@ -216,6 +217,7 @@ public class WindowController {
 							}
 						}
 						ctablestructures.keySet().retainAll(stablestructures.keySet());
+						amax = ctablestructures.keySet().size();
 						for(String ctablename : ctablestructures.keySet()) {
 							ctablestructures.get(ctablename).retainAll(stablestructures.get(ctablename));
 						}
@@ -239,9 +241,9 @@ public class WindowController {
 										insert.setObject(i,cont.getObject(i));
 									}
 								insert.execute();
-								currentTableProgressBar.setProgress((currentTableProgressBar.getProgress()+ 1) / max );
+								currentTableProgressBar.setProgress((currentTableProgressBar.getProgress()+ 1) / cmax );
 							}
-//								allTableProgressBar.setProgress(value);
+								allTableProgressBar.setProgress(allTableProgressBar.getProgress()+ 1 / amax);
 						}
 						}
 //FIXME mars: später wieder rein, wenn klar ist, dass die betreffende Tabelle tatsächlich im nächsten Schritt kopiert wird.
