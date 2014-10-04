@@ -15,8 +15,15 @@ import java.util.List;
 //TODO mars: /home/ian -> ermitteln DONE
 public class ConfUtil {
 	public static List<DBProp> conn;
-	public static void readconf() throws IOException {		
-		try(BufferedReader r = new BufferedReader(new FileReader(System.getProperty("user.home") + "/connection.ini"))){
+	public static void readconf() throws IOException {
+		File connectionsFile=new File(System.getProperty("user.home") + "/connection.ini");
+		if(!connectionsFile.exists()) {
+			connectionsFile.createNewFile();
+		}
+		if(!connectionsFile.canWrite()) {
+			throw new IOException("The file '"+connectionsFile.getAbsolutePath()+"' must be writable.");
+		}
+		try(BufferedReader r = new BufferedReader(new FileReader(connectionsFile))){
 			conn = new ArrayList<>();
 			String line = "";
 			DBProp con = null;
@@ -47,10 +54,6 @@ public class ConfUtil {
 					}
 				}
 			}
-		} catch (FileNotFoundException e) {
-			File file =new File(System.getProperty("user.home") + "/connection.ini");
-			file.createNewFile();
-			readconf();
 		}
 	}
 	public static void writeconf() throws FileNotFoundException {
