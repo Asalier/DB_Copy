@@ -4,27 +4,32 @@
     </description>
 	  <!-- set global properties for this build -->
 	  <property name="src" location="src"/>
+	  <property name="srcResources" location="${src}/resources"/>
 	  <property name="build" location="bin"/>
+	  <property name="buildResources" location="${build}/resources"/>
 	  <property name="dist" location="dist"/>
-	  <property name="resources" location="${src}/resources"/>
+	  <property name="distLib" location="${dist}/lib"/>
+	  <property name="distComplete" location="${distLib}/complete"/>
+	  <property name="ziptemporary" location="${dist}/temp"/>
+	  <property name="ziptemplate" location="${ziptemporary}/DB_Copy"/>
+	  <property name="ziptemplatebin" location="${ziptemplate}/bin"/>
+	  <property name="ziptemplatelib" location="${ziptemplate}/lib"/>
 
 	  <target name="init">
 	    <!-- Create the time stamp -->
 	    <tstamp/>
 	    <!-- Create the build directory structure used by compile -->
 	    <mkdir dir="${build}"/>
-	    <mkdir dir="${dist}"/>
-	    <mkdir dir="${dist}/lib/complete"/>
+	    <mkdir dir="${distComplete}"/>
 	  </target>
 
 	  <target name="clean" depends="init" description="clean up">
 	    <!-- Create the build directory structure used by compile -->
 	  	<delete dir="${build}"/>
-	  	<delete dir="${dist}"/>
-	    <delete dir="${dist}/lib/complete"/>
+	    <delete dir="${distComplete}"/>
 	    <mkdir dir="${build}"/>
-	    <mkdir dir="${dist}"/>
-	    <mkdir dir="${dist}/lib/complete"/>
+	    <mkdir dir="${distComplete}"/>
+	  	<delete dir="${ziptemporary}"/>
 	  </target>
 
   <target name="compile" depends="init" description="compile the source ">
@@ -38,26 +43,35 @@
   			<include name="**/*.fxml"/><!-- ** als Pfad heißt: durchsuche den ganzen Dateibaum (ab dir="...") -->
   		</fileset>
   	</copy>
- 	<copy todir="${build}/resources">
-  		<fileset dir="${resources}"/>
+ 	<copy todir="${buildResources}">
+  		<fileset dir="${srcResources}"/>
   	</copy>
-    <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/complete/dbcopy.jar" basedir="${build}">
+    <jar jarfile="${distComplete}/dbcopy.jar" basedir="${build}">
     	<manifest>
-    		<attribute name= "Creation Time" value="${DSTAMP}"/>
     		<attribute name="Main-Class" value="de.nrw.lichtenau.ian.db_copy.Launch"/>
     	</manifest>
    	</jar>
   	
-    <zip destfile="${dist}/DB_Copy.zip"
-         basedir="${dist}/lib"
-         update="true"
+  	<copy todir="${ziptemplatelib}" flatten="true" includeemptydirs="false">
+  		<fileset dir="${distLib}"/>
+  	</copy>
+	<echo file="${ziptemplatebin}/DB_Copy.cmd">java -cp "../lib/*" -jar ../lib/dbcopy.jar
+</echo>
+	<echo file="${ziptemplatebin}/DB_Copy">#!/bin/sh
+cd `dirname $0`
+java -Dprism.order=j2d -cp "../lib/*" -jar ../lib/dbcopy.jar
+</echo>
+  	
+  	<chmod file="${ziptemplatebin}/DB_Copy" perm="750"/>
+  	
+    <zip destfile="${dist}/DB_Copy.zip" 
+         basedir="${ziptemporary}"
     />
   	
-  	
+  	<delete dir="${ziptemporary}"/>
+
   </target>
 </project>
 
